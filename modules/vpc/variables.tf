@@ -4,11 +4,11 @@ variable "vpc_cidr" {
 }
 
 variable "private_subnets" {
-  description = "Private subnets for internal resources"
+  description = "List of private subnets for internal resources"
   type        = list(string)
 }
 
 variable "public_subnets" {
-  description = "Public subnets for ALB and NAT Gateway"
+  description = "List of public subnets for ALB and NAT Gateway"
   type        = list(string)
 }

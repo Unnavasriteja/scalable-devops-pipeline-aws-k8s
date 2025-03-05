@@ -6,50 +6,51 @@ module "vpc" {
 }
 
 module "eks" {
-  source         = "./modules/eks"
-  vpc_id        = module.vpc.vpc_id
+  source          = "./modules/eks"
+  vpc_id          = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnets
   eks_cluster_name = "my-eks-cluster"
 }
 
 module "rds" {
-  source         = "./modules/rds"
-  vpc_id        = module.vpc.vpc_id
+  source          = "./modules/rds"
+  vpc_id          = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnets
+  cloudwatch_alarm_arn = module.cloudwatch.cloudwatch_alarm_arn
 }
 
 module "iam" {
-  source = "./modules/iam"
-  eks_role_name = "eks-cluster-role"
+  source         = "./modules/iam"
+  eks_role_name  = "eks-cluster-role"
+  worker_role_name = "eks-worker-role"
 }
 
 module "s3" {
-  source      = "./modules/s3"
-  bucket_name = "my-app-logs"
+  source       = "./modules/s3"
+  bucket_name  = "my-app-logs"
 }
 
 module "alb" {
   source         = "./modules/alb"
-  vpc_id        = module.vpc.vpc_id
+  vpc_id         = module.vpc.vpc_id
   public_subnets = module.vpc.public_subnets
 }
 
 module "cloudwatch" {
   source              = "./modules/cloudwatch"
-  log_retention_days = 30
+  log_retention_days  = 30
 }
 
 module "elasticache" {
-  source = "./modules/elasticache"
+  source                 = "./modules/elasticache"
   elasticache_cluster_id = "redis-cluster"
 }
 
 module "efs" {
-  source = "./modules/efs"
+  source         = "./modules/efs"
   private_subnet = module.vpc.private_subnets[0]
 }
 
-# Capture important outputs for reference
 output "eks_cluster_endpoint" {
   value = module.eks.eks_cluster_endpoint
 }

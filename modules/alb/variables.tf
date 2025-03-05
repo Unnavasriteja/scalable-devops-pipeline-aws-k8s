@@ -1,5 +1,5 @@
 variable "vpc_id" {
-  description = "VPC ID"
+  description = "VPC ID where ALB is deployed"
   type        = string
 }
 
