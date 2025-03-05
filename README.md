@@ -4,17 +4,6 @@
 ## 📌 Overview
 This project implements an **end-to-end DevOps workflow** for deploying a **scalable, secure, and automated cloud-based web application** using **AWS, Terraform, Kubernetes, Jenkins, Docker, and monitoring tools like Prometheus & Grafana**.
 
-The goal is to **design, deploy, and manage** a production-ready infrastructure with **high availability, security, and automation**.
-
----
-# Save the final README.md file for download
-
-final_readme_content = """# scalable-devops-pipeline-aws-k8s
-# End-to-End DevOps Project: Scalable Cloud Deployment
-
-## 📌 Overview
-This project implements an **end-to-end DevOps workflow** for deploying a **scalable, secure, and automated cloud-based web application** using **AWS, Terraform, Kubernetes, Jenkins, Docker, and monitoring tools like Prometheus & Grafana**.
-
 The goal is to **design, deploy, and manage** a **production-ready** infrastructure with **high availability, security, and automation**.
 
 ---
