@@ -7,6 +7,17 @@ This project implements an **end-to-end DevOps workflow** for deploying a **scal
 The goal is to **design, deploy, and manage** a production-ready infrastructure with **high availability, security, and automation**.
 
 ---
+# Save the final README.md file for download
+
+final_readme_content = """# scalable-devops-pipeline-aws-k8s
+# End-to-End DevOps Project: Scalable Cloud Deployment
+
+## 📌 Overview
+This project implements an **end-to-end DevOps workflow** for deploying a **scalable, secure, and automated cloud-based web application** using **AWS, Terraform, Kubernetes, Jenkins, Docker, and monitoring tools like Prometheus & Grafana**.
+
+The goal is to **design, deploy, and manage** a **production-ready** infrastructure with **high availability, security, and automation**.
+
+---
 
 ## 🚀 Current Progress
 ✔️ **Infrastructure Setup (Terraform Modules, AWS Services, VPC, EKS, RDS, ALB, IAM)**  
@@ -14,11 +25,67 @@ The goal is to **design, deploy, and manage** a production-ready infrastructure 
 ✔️ **CloudWatch for Logs & Monitoring**  
 ✔️ **Security Best Practices (IAM Roles, Secrets Manager, Encrypted Storage)**  
 
-### 🔄 Next Steps
-⏳ **Containerizing & Deploying the Web Application to Kubernetes (EKS)**  
-⏳ **Setting up CI/CD Pipeline (Jenkins, GitHub Actions, Docker, Helm)**  
-⏳ **Monitoring & Logging (Prometheus, Grafana, Fluentd, Loki, CloudWatch)**  
-⏳ **Advanced Security Enhancements (IAM Hardening, AWS KMS, Network Security)**  
+---
+
+## 📌 Remaining Tasks & Progress
+
+| **Task** | **Status** |
+|----------|-----------|
+| **Infrastructure Setup (VPC, EKS, RDS, IAM, Security)** | ✅ Completed |
+| **Terraform State Management (S3 & DynamoDB)** | ✅ Completed |
+| **CloudWatch Logs & Monitoring for AWS Services** | ✅ Completed |
+| **Security Hardening (IAM, Secrets Manager, Network Isolation)** | ✅ Completed |
+| **Containerizing the Web Application (MERN Stack)** | ⏳ In Progress |
+| **Creating Kubernetes Deployment Manifests (YAMLs, Helm)** | ⏳ In Progress |
+| **Deploying the App to Kubernetes (EKS)** | ⏳ In Progress |
+| **Implementing CI/CD Pipeline (Jenkins, GitHub Actions)** | ⏳ Not Started |
+| **Integrating Prometheus & Grafana for Monitoring** | ⏳ Not Started |
+| **Logging with Fluentd, Loki, and CloudWatch** | ⏳ Not Started |
+| **Enabling Kubernetes Autoscaling (HPA, Cluster Autoscaler)** | ⏳ Not Started |
+| **Security Enhancements (AWS KMS, IAM Refinements, AWS WAF)** | ⏳ Not Started |
+| **Load Testing & Performance Optimization** | ⏳ Not Started |
+
+---
+
+## 📌 Tech Stack
+| Category            | Tools Used |
+|---------------------|-----------|
+| **Cloud Provider**  | AWS |
+| **Infrastructure as Code (IaC)** | Terraform |
+| **Version Control** | Git, GitHub |
+| **Configuration Management** | Ansible |
+| **Containerization** | Docker |
+| **Orchestration** | Kubernetes (EKS) |
+| **CI/CD Pipeline** | Jenkins, GitHub Actions |
+| **Monitoring & Logging** | Prometheus, Grafana, CloudWatch |
+| **Database** | AWS RDS (PostgreSQL) |
+| **Caching** | AWS Elasticache (Redis) |
+| **Security & Compliance** | IAM, AWS Secrets Manager, Security Groups |
+
+---
+
+## 📌 Terraform Folder Structure
+```
+📂 terraform-project
+ ┣ 📂 modules
+ ┃ ┣ 📂 vpc            # Networking (VPC, Subnets, NAT Gateway, Flow Logs)
+ ┃ ┣ 📂 eks            # Kubernetes Cluster (EKS)
+ ┃ ┣ 📂 rds            # Database (PostgreSQL)
+ ┃ ┣ 📂 iam            # IAM Roles & Policies
+ ┃ ┣ 📂 s3             # Storage (S3 for Logs & Terraform State)
+ ┃ ┣ 📂 alb            # Load Balancer (ALB)
+ ┃ ┣ 📂 cloudwatch     # Monitoring & Logging
+ ┃ ┣ 📂 elasticache    # Caching (Redis)
+ ┃ ┣ 📂 efs            # Shared Storage (EFS)
+ ┣ 📜 main.tf          # Calls all modules
+ ┣ 📜 provider.tf      # AWS provider setup
+ ┣ 📜 terraform.tfvars # Variable values
+ ┣ 📜 variables.tf     # Global variables
+ ┣ 📜 outputs.tf       # Global output values
+ ┣ 📜 backend.tf       # S3 Backend Configuration
+```
+✅ **Terraform state is managed securely in AWS S3 & locked via DynamoDB!** 
+
 
 ---
 
@@ -57,30 +124,7 @@ The goal is to **design, deploy, and manage** a production-ready infrastructure 
 🔴 **Security Enhancements:** AWS KMS, Advanced IAM Refinements, AWS WAF  
 
 ---
-
-## 📌 Terraform Folder Structure
-```
-📂 terraform-project
- ┣ 📂 modules
- ┃ ┣ 📂 vpc            # Networking (VPC, Subnets, NAT Gateway, Flow Logs)
- ┃ ┣ 📂 eks            # Kubernetes Cluster (EKS)
- ┃ ┣ 📂 rds            # Database (PostgreSQL)
- ┃ ┣ 📂 iam            # IAM Roles & Policies
- ┃ ┣ 📂 s3             # Storage (S3 for Logs & Terraform State)
- ┃ ┣ 📂 alb            # Load Balancer (ALB)
- ┃ ┣ 📂 cloudwatch     # Monitoring & Logging
- ┃ ┣ 📂 elasticache    # Caching (Redis)
- ┃ ┣ 📂 efs            # Shared Storage (EFS)
- ┣ 📜 main.tf          # Calls all modules
- ┣ 📜 provider.tf      # AWS provider setup
- ┣ 📜 terraform.tfvars # Variable values
- ┣ 📜 variables.tf     # Global variables
- ┣ 📜 outputs.tf       # Global output values
- ┣ 📜 backend.tf       # S3 Backend Configuration
-```
-✅ **Terraform state is managed securely in AWS S3 & locked via DynamoDB!**  
-
----
+ ---
 
 ## 📌 Deployment Steps
 ### 1️⃣ Deploy AWS Infrastructure
