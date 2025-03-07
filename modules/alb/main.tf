@@ -17,3 +17,4 @@ resource "aws_lb_listener" "http" {
 }
 
 output "alb_dns_name" { value = aws_lb.app_alb.dns_name }
+##done
