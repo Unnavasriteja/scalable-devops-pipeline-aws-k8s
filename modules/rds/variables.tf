@@ -9,9 +9,15 @@ variable "private_subnets" {
 }
 
 variable "db_instance_class" {
-  description = "The instance class for the RDS instance"
+  description = "Instance class for primary RDS instance"
   type        = string
-  default     = "db.t3.small"  # Optimized for cost while keeping HA
+  default     = "db.t3.medium"  # Optimized for HA
+}
+
+variable "db_instance_class_read_replica" {
+  description = "Instance class for Read Replica"
+  type        = string
+  default     = "db.t3.small"  # Smaller instance for replicas to save cost
 }
 
 variable "db_engine" {
@@ -27,21 +33,21 @@ variable "db_engine_version" {
 }
 
 variable "db_allocated_storage" {
-  description = "The allocated storage in GB"
+  description = "Initial allocated storage (GB)"
   type        = number
-  default     = 50  # Reduced to 50GB for cost savings
+  default     = 50  # Keeps cost low, allows Auto Scaling
 }
 
 variable "db_max_allocated_storage" {
-  description = "Maximum allocated storage in GB"
+  description = "Maximum storage limit (GB)"
   type        = number
-  default     = 200  # Allows auto-scaling to 200GB
+  default     = 200  # Allows Auto Scaling up to 200GB
 }
 
 variable "db_backup_retention_period" {
   description = "Number of days to retain backups"
   type        = number
-  default     = 3  # Reduced from 7 to 3 days
+  default     = 7  # Increased to 7 for better data retention
 }
 
 variable "db_identifier" {
@@ -51,12 +57,17 @@ variable "db_identifier" {
 }
 
 variable "db_monitoring_interval" {
-  description = "Monitoring interval in seconds (0 to disable)"
+  description = "Monitoring interval in seconds (0 to disable, 60 for CloudWatch metrics)"
   type        = number
-  default     = 0  # Disabled enhanced monitoring to save costs
+  default     = 60  # Enables CloudWatch basic monitoring
 }
 
 variable "cloudwatch_alarm_arn" {
   description = "ARN for CloudWatch Alarm notifications"
+  type        = string
+}
+
+variable "route53_zone_id" {
+  description = "Route 53 hosted zone ID"
   type        = string
 }

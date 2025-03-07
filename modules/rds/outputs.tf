@@ -1,6 +1,16 @@
-output "rds_endpoint" {
-  description = "RDS database endpoint"
+output "rds_primary_endpoint" {
+  description = "Primary RDS database endpoint"
   value       = aws_db_instance.rds.endpoint
+}
+
+output "rds_read_replica_1_endpoint" {
+  description = "Read Replica 1 endpoint"
+  value       = aws_db_instance.rds_read_replica_1.endpoint
+}
+
+output "rds_read_balancer_dns" {
+  description = "DNS name for read traffic load balancing"
+  value       = aws_route53_record.rds_read_balancer.fqdn
 }
 
 output "rds_arn" {
@@ -31,6 +41,11 @@ output "rds_multi_az" {
 output "rds_storage_size" {
   description = "Current allocated storage size in GB"
   value       = aws_db_instance.rds.allocated_storage
+}
+
+output "rds_max_storage" {
+  description = "Maximum allocated storage limit in GB"
+  value       = aws_db_instance.rds.max_allocated_storage
 }
 
 output "rds_storage_encryption" {
