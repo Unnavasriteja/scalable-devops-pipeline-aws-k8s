@@ -37,8 +37,3 @@ output "rds_storage_encryption" {
   description = "Is storage encryption enabled"
   value       = aws_db_instance.rds.storage_encrypted
 }
-
-output "rds_performance_insights" {
-  description = "Is Performance Insights enabled"
-  value       = aws_db_instance.rds.performance_insights_enabled
-}

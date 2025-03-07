@@ -16,20 +16,19 @@ data "aws_secretsmanager_secret_version" "rds_credentials" {
   secret_id = aws_secretsmanager_secret.rds_secret.id
 }
 
-# 🚀 3. Create the RDS Database Instance
+# 🚀 3. Create the RDS Database Instance (Optimized for HA & Low Cost)
 resource "aws_db_instance" "rds" {
-  identifier              = "my-rds-instance"
-  allocated_storage       = 100
-  max_allocated_storage   = 500
-  engine                 = "postgres"
-  engine_version         = "15"
-  instance_class         = "db.t3.medium"
-  multi_az               = true
+  identifier              = var.db_identifier
+  allocated_storage       = var.db_allocated_storage  # Reduced for cost savings
+  max_allocated_storage   = var.db_max_allocated_storage  # Allows scaling when needed
+  engine                 = var.db_engine
+  engine_version         = var.db_engine_version
+  instance_class         = var.db_instance_class  # Using t3.small for cost optimization
+  multi_az               = true  # Keeping HA enabled
   storage_encrypted      = true
   publicly_accessible    = false
-  backup_retention_period = 7
-  monitoring_interval     = 60
-  monitoring_role_arn     = aws_iam_role.rds_monitoring.arn
+  backup_retention_period = var.db_backup_retention_period  # Reduced to 3 days
+  monitoring_interval     = var.db_monitoring_interval  # Disabled enhanced monitoring
 
   # Retrieve credentials from AWS Secrets Manager
   username = jsondecode(data.aws_secretsmanager_secret_version.rds_credentials.secret_string)["username"]
@@ -38,10 +37,6 @@ resource "aws_db_instance" "rds" {
   # Network Configuration
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
-
-  # Performance Insights
-  performance_insights_enabled          = true
-  performance_insights_retention_period = 7
 }
 
 # 🚀 4. Security Group for RDS (Restricts Access)

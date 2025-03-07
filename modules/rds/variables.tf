@@ -11,7 +11,7 @@ variable "private_subnets" {
 variable "db_instance_class" {
   description = "The instance class for the RDS instance"
   type        = string
-  default     = "db.t3.medium"
+  default     = "db.t3.small"  # Optimized for cost while keeping HA
 }
 
 variable "db_engine" {
@@ -29,64 +29,34 @@ variable "db_engine_version" {
 variable "db_allocated_storage" {
   description = "The allocated storage in GB"
   type        = number
-  default     = 100
+  default     = 50  # Reduced to 50GB for cost savings
 }
 
 variable "db_max_allocated_storage" {
   description = "Maximum allocated storage in GB"
   type        = number
-  default     = 500
+  default     = 200  # Allows auto-scaling to 200GB
 }
 
-variable "multi_az" {
-  description = "Enable multi-AZ for high availability"
-  type        = bool
-  default     = true
-}
-
-variable "storage_encrypted" {
-  description = "Enable encryption for RDS storage"
-  type        = bool
-  default     = true
-}
-
-variable "backup_retention_period" {
+variable "db_backup_retention_period" {
   description = "Number of days to retain backups"
   type        = number
-  default     = 7
-}
-
-variable "skip_final_snapshot" {
-  description = "Skip the final snapshot before deletion"
-  type        = bool
-  default     = false
-}
-
-variable "monitoring_interval" {
-  description = "Monitoring interval in seconds for enhanced monitoring"
-  type        = number
-  default     = 60
-}
-
-variable "performance_insights_enabled" {
-  description = "Enable Performance Insights for RDS"
-  type        = bool
-  default     = true
-}
-
-variable "performance_insights_retention_period" {
-  description = "Retention period for Performance Insights (days)"
-  type        = number
-  default     = 7
-}
-
-variable "cloudwatch_alarm_arn" {
-  description = "ARN for CloudWatch Alarm notifications"
-  type        = string
+  default     = 3  # Reduced from 7 to 3 days
 }
 
 variable "db_identifier" {
   description = "RDS Database Identifier"
   type        = string
   default     = "my-rds-instance"
+}
+
+variable "db_monitoring_interval" {
+  description = "Monitoring interval in seconds (0 to disable)"
+  type        = number
+  default     = 0  # Disabled enhanced monitoring to save costs
+}
+
+variable "cloudwatch_alarm_arn" {
+  description = "ARN for CloudWatch Alarm notifications"
+  type        = string
 }
