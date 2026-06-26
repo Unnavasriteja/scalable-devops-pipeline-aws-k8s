@@ -1,0 +1,69 @@
+name: Deploy to EKS
+
+on:
+  workflow_run:
+    workflows: ["Build and Push to ECR"]
+    types:
+      - completed
+    branches:
+      - main
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+
+jobs:
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name ${{ env.EKS_CLUSTER_NAME }}
+
+      - name: Get commit SHA from triggering run
+        id: sha
+        run: echo "sha=${{ github.event.workflow_run.head_sha }}" >> $GITHUB_OUTPUT
+
+      - name: Deploy namespace and config
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+
+      - name: Update image tags and deploy
+        run: |
+          # Substitute ECR registry and image tag in manifests
+          sed -i "s|YOUR_ECR_REGISTRY/mern-backend:latest|${{ env.ECR_REGISTRY }}/mern-backend:${{ steps.sha.outputs.sha }}|g" k8s/backend-deployment.yaml
+          sed -i "s|YOUR_ECR_REGISTRY/mern-frontend:latest|${{ env.ECR_REGISTRY }}/mern-frontend:${{ steps.sha.outputs.sha }}|g" k8s/frontend-deployment.yaml
+
+          kubectl apply -f k8s/mongo-statefulset.yaml
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/frontend-deployment.yaml
+          kubectl apply -f k8s/ingress.yaml
+          kubectl apply -f k8s/hpa.yaml
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/backend -n mern-app --timeout=120s
+          kubectl rollout status deployment/frontend -n mern-app --timeout=120s
+
+      - name: Get ALB endpoint
+        run: |
+          echo "### Deployment complete" >> $GITHUB_STEP_SUMMARY
+          ALB=$(kubectl get ingress mern-ingress -n mern-app -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo "pending")
+          echo "ALB endpoint: $ALB" >> $GITHUB_STEP_SUMMARY

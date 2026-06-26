@@ -13,6 +13,10 @@ The goal is to design, deploy, and manage a production-ready infrastructure with
 ✔️ Remote Terraform State Management (S3 & DynamoDB)  
 ✔️ CloudWatch for Logs & Monitoring  
 ✔️ Security Best Practices (IAM Roles, Secrets Manager, Encrypted Storage)  
+✔️ Containerized MERN App (Docker, docker-compose, ECR)  
+✔️ Kubernetes Manifests (Deployments, StatefulSet, Services, Ingress, HPA)  
+✔️ CI/CD Pipelines (GitHub Actions: ECR build/push + EKS deploy)  
+✔️ Prometheus & Grafana Monitoring Stack on Kubernetes  
 
 ---
 
@@ -24,13 +28,13 @@ The goal is to design, deploy, and manage a production-ready infrastructure with
 | Terraform State Management (S3 & DynamoDB) | ✅ Completed |
 | CloudWatch Logs & Monitoring for AWS Services | ✅ Completed |
 | Security Hardening (IAM, Secrets Manager, Network Isolation) | ✅ Completed |
-| Containerizing the Web Application (MERN Stack) | ⏳ In Progress |
-| Creating Kubernetes Deployment Manifests (YAMLs, Helm) | ⏳ In Progress |
+| Containerizing the Web Application (MERN Stack) | ✅ Completed |
+| Creating Kubernetes Deployment Manifests (YAMLs) | ✅ Completed |
+| Enabling Kubernetes Autoscaling (HPA) | ✅ Completed |
+| Implementing CI/CD Pipeline (GitHub Actions) | ✅ Completed |
+| Integrating Prometheus & Grafana for Monitoring | ✅ Completed |
 | Deploying the App to Kubernetes (EKS) | ⏳ In Progress |
-| Implementing CI/CD Pipeline (Jenkins, GitHub Actions) | ⏳ Not Started |
-| Integrating Prometheus & Grafana for Monitoring | ⏳ Not Started |
 | Logging with Fluentd, Loki, and CloudWatch | ⏳ Not Started |
-| Enabling Kubernetes Autoscaling (HPA, Cluster Autoscaler) | ⏳ Not Started |
 | Security Enhancements (AWS KMS, IAM Refinements, AWS WAF) | ⏳ Not Started |
 | Load Testing & Performance Optimization | ⏳ Not Started |
 
@@ -96,13 +100,38 @@ This will provision all AWS infrastructure components automatically.
 
 ---
 
-### 2. Deploy Kubernetes Application (Upcoming)
+### 2. Set GitHub Actions Secrets
 
-Once the infrastructure is ready:
+Add the following secrets in your GitHub repository settings:
 
-- Containerize the web application using Docker  
-- Deploy it to EKS using Kubernetes manifests  
-- Automate deployments using GitHub Actions & Jenkins  
+| Secret | Description |
+|--------|-------------|
+| `AWS_ACCESS_KEY_ID` | IAM user access key |
+| `AWS_SECRET_ACCESS_KEY` | IAM user secret key |
+| `AWS_REGION` | e.g. `us-east-1` |
+| `ECR_REGISTRY` | e.g. `123456789.dkr.ecr.us-east-1.amazonaws.com` |
+| `EKS_CLUSTER_NAME` | Your EKS cluster name |
+
+### 3. Deploy Kubernetes Application
+
+CI/CD is fully automated via GitHub Actions:
+
+- **`build-push-ecr.yml`** — triggers on `app/**` changes to `main`; builds Docker images and pushes to ECR
+- **`deploy-eks.yml`** — triggers after ECR workflow succeeds; deploys manifests to EKS with the new image SHA
+- **`deploy-monitoring.yml`** — triggers on `k8s/monitoring/**` changes; deploys Prometheus & Grafana
+
+To deploy manually:
+
+```bash
+# Configure kubectl
+aws eks update-kubeconfig --region <region> --name <cluster-name>
+
+# Deploy app
+kubectl apply -f k8s/
+
+# Deploy monitoring
+kubectl apply -f k8s/monitoring/
+```
 
 ---
 
