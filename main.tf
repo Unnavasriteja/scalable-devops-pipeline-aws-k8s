@@ -37,8 +37,12 @@ module "alb" {
 }
 
 module "cloudwatch" {
-  source              = "./modules/cloudwatch"
-  log_retention_days  = 30
+  source               = "./modules/cloudwatch"
+  log_retention_days   = 30
+  cloudwatch_alarm_arn = var.cloudwatch_alarm_sns_arn
+  eks_cluster_name     = "my-eks-cluster"
+  oidc_provider_arn    = module.eks.oidc_provider_arn
+  oidc_provider_url    = module.eks.oidc_provider_url
 }
 
 module "elasticache" {

@@ -29,3 +29,9 @@ variable "db_password" {
 variable "app_cidr" {
   type        = list(string)
 }
+
+variable "cloudwatch_alarm_sns_arn" {
+  type        = string
+  description = "SNS topic ARN for CloudWatch alarm notifications"
+  default     = ""
+}

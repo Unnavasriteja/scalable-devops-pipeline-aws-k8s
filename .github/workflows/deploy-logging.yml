@@ -1,0 +1,72 @@
+name: Deploy Logging Stack
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'k8s/logging/**'
+      - 'k8s/monitoring/grafana-deployment.yaml'
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+
+jobs:
+  deploy-logging:
+    name: Deploy Fluent Bit + Loki
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name ${{ env.EKS_CLUSTER_NAME }}
+
+      - name: Inject Fluent Bit IAM role ARN
+        run: |
+          ROLE_ARN=$(aws iam get-role --role-name fluent-bit-irsa-role --query Role.Arn --output text)
+          sed -i "s|\${FLUENT_BIT_ROLE_ARN}|$ROLE_ARN|g" k8s/logging/fluent-bit-rbac.yaml
+
+      - name: Inject AWS region into Fluent Bit DaemonSet env
+        run: |
+          sed -i "s|us-east-1|${{ env.AWS_REGION }}|g" k8s/logging/fluent-bit-daemonset.yaml
+
+      - name: Deploy Loki
+        run: |
+          kubectl apply -f k8s/logging/namespace.yaml
+          kubectl apply -f k8s/logging/loki-deployment.yaml
+
+      - name: Deploy Fluent Bit
+        run: |
+          kubectl apply -f k8s/logging/fluent-bit-rbac.yaml
+          kubectl apply -f k8s/logging/fluent-bit-configmap.yaml
+          kubectl apply -f k8s/logging/fluent-bit-daemonset.yaml
+
+      - name: Wait for Loki
+        run: |
+          kubectl rollout status deployment/loki -n logging --timeout=120s
+
+      - name: Reload Grafana datasources
+        run: |
+          kubectl apply -f k8s/monitoring/grafana-deployment.yaml
+          kubectl rollout restart deployment/grafana -n monitoring
+
+      - name: Summary
+        run: |
+          echo "### Logging stack deployed" >> $GITHUB_STEP_SUMMARY
+          echo "- Fluent Bit DaemonSet: collects all pod logs" >> $GITHUB_STEP_SUMMARY
+          echo "- Outputs: CloudWatch log group /eks/mern-app/application + Loki" >> $GITHUB_STEP_SUMMARY
+          echo "- Grafana updated with Loki datasource (Explore → Loki)" >> $GITHUB_STEP_SUMMARY
