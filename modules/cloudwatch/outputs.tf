@@ -22,3 +22,8 @@ output "fluent_bit_role_arn" {
   description = "IAM role ARN for Fluent Bit IRSA"
   value       = aws_iam_role.fluent_bit.arn
 }
+
+output "waf_log_group_arn" {
+  description = "CloudWatch log group ARN for WAF logs"
+  value       = aws_cloudwatch_log_group.waf_logs.arn
+}

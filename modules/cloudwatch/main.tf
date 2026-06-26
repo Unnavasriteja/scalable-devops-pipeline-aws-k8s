@@ -18,6 +18,12 @@ resource "aws_cloudwatch_log_group" "frontend_logs" {
   retention_in_days = var.log_retention_days
 }
 
+# WAF requires log group name to start with aws-waf-logs-
+resource "aws_cloudwatch_log_group" "waf_logs" {
+  name              = "aws-waf-logs-mern-app"
+  retention_in_days = var.log_retention_days
+}
+
 resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   alarm_name          = "high-cpu-utilization"
   comparison_operator = "GreaterThanThreshold"

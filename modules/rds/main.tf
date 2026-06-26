@@ -24,8 +24,9 @@ resource "aws_db_instance" "rds" {
   engine                 = var.db_engine
   engine_version         = var.db_engine_version
   instance_class         = var.db_instance_class
-  multi_az               = true  # Ensures HA (Automatic Failover)
+  multi_az               = true
   storage_encrypted      = true
+  kms_key_id             = var.kms_key_arn
   publicly_accessible    = false
   backup_retention_period = var.db_backup_retention_period
   deletion_protection     = true # Prevents accidental deletion

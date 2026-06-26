@@ -71,3 +71,9 @@ variable "route53_zone_id" {
   description = "Route 53 hosted zone ID"
   type        = string
 }
+
+variable "kms_key_arn" {
+  description = "KMS key ARN for RDS storage encryption"
+  type        = string
+  default     = null
+}

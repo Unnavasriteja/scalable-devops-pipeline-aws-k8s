@@ -18,6 +18,7 @@ The goal is to design, deploy, and manage a production-ready infrastructure with
 ✔️ CI/CD Pipelines (GitHub Actions: ECR build/push + EKS deploy)  
 ✔️ Prometheus & Grafana Monitoring Stack on Kubernetes  
 ✔️ Logging Pipeline (Fluent Bit → CloudWatch + Loki, Grafana log querying)  
+✔️ Security Enhancements (KMS customer-managed keys, WAF WebACL, IAM worker role + password policy)  
 
 ---
 
@@ -36,7 +37,7 @@ The goal is to design, deploy, and manage a production-ready infrastructure with
 | Integrating Prometheus & Grafana for Monitoring | ✅ Completed |
 | Deploying the App to Kubernetes (EKS) | ⏳ In Progress |
 | Logging with Fluent Bit, Loki, and CloudWatch | ✅ Completed |
-| Security Enhancements (AWS KMS, IAM Refinements, AWS WAF) | ⏳ Not Started |
+| Security Enhancements (AWS KMS, IAM Refinements, AWS WAF) | ✅ Completed |
 | Load Testing & Performance Optimization | ⏳ Not Started |
 
 ---

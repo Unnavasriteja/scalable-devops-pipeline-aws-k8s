@@ -13,21 +13,27 @@ module "eks" {
 }
 
 module "rds" {
-  source          = "./modules/rds"
-  vpc_id          = module.vpc.vpc_id
-  private_subnets = module.vpc.private_subnets
+  source               = "./modules/rds"
+  vpc_id               = module.vpc.vpc_id
+  private_subnets      = module.vpc.private_subnets
   cloudwatch_alarm_arn = module.cloudwatch.cloudwatch_alarm_arn
+  kms_key_arn          = module.kms.rds_key_arn
+}
+
+module "kms" {
+  source = "./modules/kms"
 }
 
 module "iam" {
-  source         = "./modules/iam"
-  eks_role_name  = "eks-cluster-role"
+  source           = "./modules/iam"
+  eks_role_name    = "eks-cluster-role"
   worker_role_name = "eks-worker-role"
 }
 
 module "s3" {
   source       = "./modules/s3"
   bucket_name  = "my-app-logs"
+  kms_key_arn  = module.kms.s3_key_arn
 }
 
 module "alb" {
@@ -53,6 +59,12 @@ module "elasticache" {
 module "efs" {
   source         = "./modules/efs"
   private_subnet = module.vpc.private_subnets[0]
+}
+
+module "waf" {
+  source            = "./modules/waf"
+  alb_arn           = module.alb.alb_arn
+  waf_log_group_arn = module.cloudwatch.waf_log_group_arn
 }
 
 output "eks_cluster_endpoint" {
